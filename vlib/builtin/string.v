@@ -321,14 +321,14 @@ pub fn (s string) split_into_lines() []string {
 // 'hello'.left(2) => 'he'
 pub fn (s string) left(n int) string {
 	if n >= s.len {
-		return s
+		return s.clone()
 	}
 	return s.substr(0, n)
 }
 
 pub fn (s string) right(n int) string {
 	if n >= s.len {
-		return ''
+		return ''.clone()
 	}
 	return s.substr(n, s.len)
 }
@@ -537,7 +537,7 @@ pub fn (c byte) is_space() bool {
 
 pub fn (s string) trim_space() string {
 	if s == '' {
-		return ''
+		return ''.clone()
 	}
 	// println('TRIM SPACE "$s"')
 	mut i := 0

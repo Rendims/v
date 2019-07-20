@@ -338,6 +338,16 @@ fn popen(path string) *FILE {
 	}
 }
 
+fn pclose(stream *FILE) int {
+	$if windows {
+		// TODO close process
+		return 0
+	}
+	$else {
+		return C.pclose(stream)
+	}
+}
+
 // exec starts the specified command, waits for it to complete, and returns its output.
 pub fn exec(cmd string) string {
 	cmd = '$cmd 2>&1'
@@ -345,14 +355,20 @@ pub fn exec(cmd string) string {
 	if isnil(f) {
 		// TODO optional or error code 
 		println('popen $cmd failed')
-		return '' 
+		return ''.clone() // always return an owned string
 	}
+	cmd.free()
 	buf := [1000]byte 
-	mut res := ''
-	for C.fgets(buf, 1000, f) != 0 { 
+	mut res := ''.clone()
+	for C.fgets(buf, 1000, f) != 0 {
+		prev := res
 		res += tos(buf, strlen(buf)) 
+		prev.free()
 	}
-	return res.trim_space()
+	pclose(f)
+	trim := res.trim_space()
+	res.free()
+	return trim
 }
 
 // `getenv` returns the value of the environment variable named by the key.
