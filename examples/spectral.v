@@ -1,7 +1,7 @@
 /*
 https://benchmarksgame-team.pages.debian.net/benchmarksgame/performance/spectralnorm.html
 Added: Pradeep Verghese
-Benchmarks: 
+Benchmarks:
 Used v -prod spectral.v
 Command: time ./spectral 5500
 Output: 1.274224153
@@ -42,7 +42,8 @@ fn (v mut []f64) a_times_transp(u []f64) {
     mut x := [f64(0); u.len]
     x.times(u)
     v.times_trans(x)
-} 
+    x.free()
+}
 
 fn main() {
 
@@ -53,7 +54,7 @@ fn main() {
         n = args[1].int()
     }
     else {
-        n = 0 
+        n = 0
     }
     mut u := [f64(1.0);n]
     mut v := [f64(1.0);n]
@@ -71,8 +72,8 @@ fn main() {
         vv += v[i] * v[i]
     }
     ans := math.sqrt(vbv/vv)
+    v.free()
+    u.free()
 
     println('${ans:0.9f}')
-
-
 }
